@@ -1,0 +1,63 @@
+---
+- name: Create the dockernetwork
+  docker_network:
+    name: "{{ docker_network_name }}"
+
+- name: Create the files directory
+  file:
+    path: "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files"
+    state: directory
+
+- name: Create the database directory
+  file:
+    path: "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files/db"
+    state: directory
+
+- name: Create apline-mongo container
+  docker_container:
+    name: "{{ application_name }}-database"
+    image: "mvertes/alpine-mongo:latest"
+    log_driver: "awslogs"
+    log_options:
+        awslogs-region: "{{cloudwatch_region}}"
+        awslogs-group: "{{cloudwatch_log_group}}"
+        awslogs-stream: "{{ application_name }}-database"
+    restart_policy: "always"
+    memory: "70MB"
+    exposed_ports:
+      - "27017"
+    volumes:
+        - "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files/db:/data/db"
+    networks:
+      - name: "{{ docker_network_name }}"
+
+- name: Create app container
+  docker_container:
+    name: "{{ application_name }}-app"
+    image: "namelivia/flappysonic:latest"
+    pull: true
+    restart_policy: "always"
+    memory: "100MB"
+    log_driver: "awslogs"
+    log_options:
+        awslogs-region: "{{cloudwatch_region}}"
+        awslogs-group: "{{cloudwatch_log_group}}"
+        awslogs-stream: "{{ application_name }}-app"
+    exposed_ports:
+      - "60000"
+    networks:
+      - name: "{{ docker_network_name }}"
+    env:
+      VIRTUAL_HOST: "{{ domain_name }}"
+      LETSENCRYPT_HOST: "{{ domain_name }}"
+      VIRTUAL_PORT: "60000"
+      DATABASE_URL: "mongodb://{{ application_name }}-database/{{ application_name }}"
+
+- name: Setup file backups
+  include_role:
+    name: namelivia.backups
+    tasks_from: setup-file-backups
+
+- include_role:
+    name: namelivia.backups
+    tasks_from: setup-s3-backups

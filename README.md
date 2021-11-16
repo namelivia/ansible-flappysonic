@@ -11,7 +11,7 @@ collections:
   - community.docker
 
 roles:
-  - src: https://github.com/namelivia/namelivia.flappysonic
+  - src: https://github.com/namelivia/ansible-flappysonic
 ```
 
 ## Required variables

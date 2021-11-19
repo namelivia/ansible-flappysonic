@@ -18,11 +18,13 @@
   file:
     path: "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files"
     state: directory
+    mode: 0700
 
 - name: Create the database directory
   file:
     path: "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files/db"
     state: directory
+    mode: 0700
 
 - name: Create apline-mongo container
   docker_container:

@@ -43,6 +43,7 @@
       - "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files/db:/data/db"
     networks:
       - name: "{{ docker_network_name }}"
+      - name: "bridge"
 
 - name: Create app container
   docker_container:

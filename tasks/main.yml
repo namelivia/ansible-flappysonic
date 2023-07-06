@@ -68,6 +68,13 @@
       VIRTUAL_PORT: "60000"
       DATABASE_URL: "mongodb://{{ application_name }}-database/{{ application_name }}"
 
+- name: Restart proxy
+  docker_container:
+    name: "proxy"
+    image: "nginxproxy/nginx-proxy"
+    state: started
+    restart: yes
+
 - name: Setup file backups
   include_role:
     name: ansible-backups

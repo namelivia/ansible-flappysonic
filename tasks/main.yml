@@ -43,7 +43,6 @@
       - "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files/db:/data/db"
     networks:
       - name: "{{ docker_network_name }}"
-      - name: "bridge"
 
 - name: Create app container
   docker_container:
@@ -62,6 +61,7 @@
       - "60000"
     networks:
       - name: "{{ docker_network_name }}"
+      - name: "bridge"
     env:
       VIRTUAL_HOST: "{{ domain_name }}"
       LETSENCRYPT_HOST: "{{ domain_name }}"

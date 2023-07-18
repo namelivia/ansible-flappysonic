@@ -5,8 +5,7 @@
     that:
       - application_name is defined
       - docker_network_name is defined
-      - cloudwatch_region is defined
-      - cloudwatch_log_group is defined
+      - loki_url is defined
       - domain_name is defined
       - backup_day is defined
 
@@ -30,11 +29,10 @@
   docker_container:
     name: "{{ application_name }}-database"
     image: "mvertes/alpine-mongo:latest"
-    log_driver: "awslogs"
+    log_driver: "loki"
     log_options:
-      awslogs-region: "{{ cloudwatch_region }}"
-      awslogs-group: "{{ cloudwatch_log_group }}"
-      awslogs-stream: "{{ application_name }}-database"
+      loki-url: "{{ loki_url }}"
+      loki-batch-size: "400"
     restart_policy: "always"
     memory: "70MB"
     exposed_ports:
@@ -52,11 +50,10 @@
     cleanup: true
     restart_policy: "always"
     memory: "100MB"
-    log_driver: "awslogs"
+    log_driver: "loki"
     log_options:
-      awslogs-region: "{{ cloudwatch_region }}"
-      awslogs-group: "{{ cloudwatch_log_group }}"
-      awslogs-stream: "{{ application_name }}-app"
+      loki-url: "{{ loki_url }}"
+      loki-batch-size: "400"
     exposed_ports:
       - "60000"
     networks:

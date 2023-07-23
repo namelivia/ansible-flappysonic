@@ -6,8 +6,8 @@
       - application_name is defined
       - docker_network_name is defined
       - loki_url is defined
-      - domain_name is defined
       - backup_day is defined
+      - host_port is defined
 
 - name: Create the dockernetwork
   docker_network:
@@ -56,13 +56,12 @@
       loki-batch-size: "400"
     exposed_ports:
       - "60000"
+    published_ports:
+      - "0.0.0.0:{{ host_port }}:60000"
     networks:
       - name: "{{ docker_network_name }}"
       - name: "bridge"
     env:
-      VIRTUAL_HOST: "{{ domain_name }}"
-      LETSENCRYPT_HOST: "{{ domain_name }}"
-      VIRTUAL_PORT: "60000"
       DATABASE_URL: "mongodb://{{ application_name }}-database/{{ application_name }}"
 
 - name: Restart proxy

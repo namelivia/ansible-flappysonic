@@ -17,13 +17,13 @@
   file:
     path: "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files"
     state: directory
-    mode: 0700
+    mode: "0700"
 
 - name: Create the database directory
   file:
     path: "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files/db"
     state: directory
-    mode: 0700
+    mode: "0700"
 
 - name: Create apline-mongo container
   docker_container:
@@ -72,3 +72,10 @@
   include_role:
     name: ansible-backups
     tasks_from: setup-s3-backups
+
+- name: Setup restic backups
+  include_role:
+    name: ansible-backups
+    tasks_from: setup-restic-backups
+  vars:
+    file_path: "{{ hostvars[inventory_hostname].working_directory }}{{ application_name }}/files"

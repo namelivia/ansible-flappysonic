@@ -60,13 +60,8 @@
       - "0.0.0.0:{{ host_port }}:60000"
     networks:
       - name: "{{ docker_network_name }}"
-      - name: "bridge"
     env:
       DATABASE_URL: "mongodb://{{ application_name }}-database/{{ application_name }}"
-
-- name: Restart proxy
-  shell: 
-    cmd: docker restart proxy
 
 - name: Setup file backups
   include_role:

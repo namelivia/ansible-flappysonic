@@ -16,6 +16,5 @@ roles:
 
 ## Required variables
  - `loki_url` Loki endpoint to send logs.
- - `domain_name` The domain name in which the app will be served from.
  - `backup_day` Day of the week in which the content will be backed up.
  - `host_port` Port to be mapped in the host machine.
